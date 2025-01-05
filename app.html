@@ -19,11 +19,17 @@
         // Call the Parse Cloud Function
         async function fetchData() {
             try {
-                // Call the cloud function
+                console.log("Calling Parse Cloud function...");
                 const result = await Parse.Cloud.run('getApp');
+                console.log("Cloud function result:", result);
 
-                // Replace the entire page source with the result
-                document.documentElement.innerHTML = result.html;
+                if (result && result.html) {
+                    console.log("Replacing page content...");
+                    document.documentElement.innerHTML = result.html;
+                } else {
+                    console.error("No HTML content returned from the cloud function.");
+                    document.body.innerHTML = '<h1>Error Loading Application</h1><p>No content returned from the server.</p>';
+                }
             } catch (error) {
                 console.error('Error calling Parse Cloud function:', error);
                 document.body.innerHTML = '<h1>Error Loading Application</h1><p>Sorry, there was an error loading the application. Please try again later.</p>';
