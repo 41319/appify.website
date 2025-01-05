@@ -16,6 +16,27 @@
         Parse.initialize("3ZraCGVEMT8vTcJXzKKiZ65OQ9dsJJqo3wDgneHM", "hQkocwX7BFcwJ5aOYqE7rtbmBqRxeIw9aiLuf7Cp");
         Parse.serverURL = "https://mobile413.b4a.io"; // Replace with your Parse Server URL
 
+        // Function to execute scripts in the new HTML
+        function executeScripts(newHTML) {
+            const template = document.createElement('template');
+            template.innerHTML = newHTML;
+
+            // Extract and execute scripts
+            const scripts = template.content.querySelectorAll('script');
+            scripts.forEach(oldScript => {
+                const newScript = document.createElement('script');
+                if (oldScript.src) {
+                    newScript.src = oldScript.src; // External script
+                } else {
+                    newScript.textContent = oldScript.textContent; // Inline script
+                }
+                document.body.appendChild(newScript);
+            });
+
+            // Return the sanitized HTML without scripts
+            return template.innerHTML;
+        }
+
         // Call the Parse Cloud Function
         async function fetchData() {
             try {
@@ -25,7 +46,10 @@
 
                 if (result && result.html) {
                     console.log("Replacing page content...");
-                    document.documentElement.innerHTML = result.html;
+
+                    // Execute scripts and replace the page content
+                    const sanitizedHTML = executeScripts(result.html);
+                    document.documentElement.innerHTML = sanitizedHTML;
                 } else {
                     console.error("No HTML content returned from the cloud function.");
                     document.body.innerHTML = '<h1>Error Loading Application</h1><p>No content returned from the server.</p>';
