@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parse Cloud Function Example</title>
+    <!-- Include Parse SDK -->
+    <script src="https://unpkg.com/parse/dist/parse.min.js"></script>
+</head>
+<body>
+    <h1>Loading...</h1>
+    <p>Please wait while we load the application.</p>
+
+    <script>
+        // Initialize Parse with your Back4App or Parse Server credentials
+        Parse.initialize("3ZraCGVEMT8vTcJXzKKiZ65OQ9dsJJqo3wDgneHM", "hQkocwX7BFcwJ5aOYqE7rtbmBqRxeIw9aiLuf7Cp");
+        Parse.serverURL = "https://mobile413.b4a.io"; // Replace with your Parse Server URL
+
+        // Call the Parse Cloud Function
+        async function fetchData() {
+            try {
+                // Call the cloud function
+                const result = await Parse.Cloud.run('getApp');
+
+                // Replace the entire page source with the result
+                document.documentElement.innerHTML = result.html;
+            } catch (error) {
+                console.error('Error calling Parse Cloud function:', error);
+                document.body.innerHTML = '<h1>Error Loading Application</h1><p>Sorry, there was an error loading the application. Please try again later.</p>';
+            }
+        }
+
+        // Call the function when the page loads
+        fetchData();
+    </script>
+</body>
+</html>
